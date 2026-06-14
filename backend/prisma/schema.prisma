@@ -1,0 +1,71 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  phone          String
+  totalSpend     Float           @default(0.0)
+  lastOrderDate  DateTime?
+  ordersCount    Int             @default(0)
+  segment        String          @default("Active") // VIP, Dormant, Active, etc.
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  orders         Order[]
+  communications Communication[]
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  amount      Float
+  orderDate   DateTime @default(now())
+  status      String   @default("DELIVERED") // DELIVERED, RETURNED, CANCELLED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Campaign {
+  id                String          @id @default(uuid())
+  name              String
+  goal              String
+  segmentDefinition String          // JSON describing matching filters
+  channel           String          // WHATSAPP, EMAIL, SMS, RCS
+  subject           String?
+  message           String
+  cta               String?
+  status            String          @default("DRAFT") // DRAFT, LAUNCHED, COMPLETED
+  expectedRevenue   Float           @default(0.0)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  communications    Communication[]
+}
+
+model Communication {
+  id         String   @id @default(uuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status     String   @default("SENT") // SENT, DELIVERED, OPENED, CLICKED, CONVERTED, FAILED
+  sentAt     DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  events     Event[]
+}
+
+model Event {
+  id              String        @id @default(uuid())
+  communicationId String
+  communication   Communication @relation(fields: [communicationId], references: [id], onDelete: Cascade)
+  type            String        // SENT, DELIVERED, OPENED, CLICKED, CONVERTED, FAILED
+  timestamp       DateTime      @default(now())
+  metadata        String?       // JSON string (e.g. { "revenue": 1200 })
+}
