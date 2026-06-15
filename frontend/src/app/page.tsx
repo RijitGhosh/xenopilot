@@ -10,6 +10,7 @@ import Builder from '../components/Builder';
 import Customers from '../components/Customers';
 import Campaigns from '../components/Campaigns';
 import Analytics from '../components/Analytics';
+import { API_URL } from '../lib/api';
 
 // Global query client will be instantiated client-side in RootPage
 
@@ -32,7 +33,7 @@ function MainAppContent() {
   const { data: analytics, isLoading, isError, refetch } = useQuery({
     queryKey: ['analyticsData'],
     queryFn: async () => {
-      const response = await fetch('http://localhost:5000/api/analytics');
+      const response = await fetch(`${API_URL}/api/analytics`);
       if (!response.ok) {
         throw new Error('Network error fetching analytics aggregates');
       }
