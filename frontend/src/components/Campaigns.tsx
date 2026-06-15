@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Megaphone, ArrowLeft, Mail, MessageSquare, Percent, DollarSign, Calendar, TrendingUp, ChevronRight, Activity, Users } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
+import { API_URL } from '../lib/api';
 
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -15,7 +16,7 @@ export default function Campaigns() {
   const fetchCampaigns = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/campaigns');
+      const response = await fetch(`${API_URL}/api/campaigns`);
       const data = await response.json();
       setCampaigns(data || []);
     } catch (e) {
@@ -33,7 +34,7 @@ export default function Campaigns() {
   const fetchCampaignDetail = async (id: string) => {
     setIsDetailLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/campaigns/${id}`);
+      const response = await fetch(`${API_URL}/api/campaigns/${id}`);
       const data = await response.json();
       setCampaignDetail(data);
     } catch (e) {

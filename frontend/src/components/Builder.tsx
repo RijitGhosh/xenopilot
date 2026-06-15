@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Sparkles, Megaphone, Users, Mail, MessageSquare, Send, CheckCircle2, ChevronRight, Play } from 'lucide-react';
+import { API_URL } from '../lib/api';
 
 interface BuilderProps {
   onNavigate: (page: string) => void;
@@ -29,7 +30,7 @@ export default function Builder({ onNavigate, refetchAnalytics }: BuilderProps) 
     setLaunchResult(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/ai/generate-campaign', {
+      const response = await fetch(`${API_URL}/api/ai/generate-campaign`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal: prompt })
@@ -48,7 +49,7 @@ export default function Builder({ onNavigate, refetchAnalytics }: BuilderProps) 
     setIsLaunching(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/campaigns/launch', {
+      const response = await fetch(`${API_URL}/api/campaigns/launch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, X, ShoppingBag, Send, Sparkles, SlidersHorizontal, ArrowUpDown, Plus, CheckCircle } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { API_URL } from '../lib/api';
 
 export default function Customers() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -35,7 +36,7 @@ export default function Customers() {
   // Create Customer Mutation
   const createCustomerMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await fetch('http://localhost:5000/api/customers', {
+      const response = await fetch(`${API_URL}/api/customers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -72,7 +73,7 @@ export default function Customers() {
             sortBy,
             sortOrder
           });
-          const response = await fetch(`http://localhost:5000/api/customers?${queryParams}`);
+          const response = await fetch(`${API_URL}/api/customers?${queryParams}`);
           const data = await response.json();
           setCustomers(data.customers || []);
           setTotalPages(data.pagination?.totalPages || 1);
@@ -135,7 +136,7 @@ export default function Customers() {
           sortOrder
         });
 
-        const response = await fetch(`http://localhost:5000/api/customers?${queryParams}`);
+        const response = await fetch(`${API_URL}/api/customers?${queryParams}`);
         const data = await response.json();
         setCustomers(data.customers || []);
         setTotalPages(data.pagination?.totalPages || 1);
@@ -159,7 +160,7 @@ export default function Customers() {
     const fetchCustomerDetail = async () => {
       setIsDetailLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/api/customers/${selectedCustomerId}`);
+        const response = await fetch(`${API_URL}/api/customers/${selectedCustomerId}`);
         const data = await response.json();
         setSelectedCustomerDetail(data);
       } catch (e) {
